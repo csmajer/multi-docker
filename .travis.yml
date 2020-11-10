@@ -1,0 +1,21 @@
+sudo:required
+services:
+    - docker
+
+before_install:
+    - docker build csmajer/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run -e CI=true csmajer/react-test npm test
+
+after_success:
+    - docker build -t csmajer/multi-client ./client
+    - docker build -t csmajer/multi-nginx ./nginx
+    - docker build -t csmajer/multi-server ./server
+    - docker build -t csmajer/multi-worker ./worker
+    #Log in to docker
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    - docker push csmajer/multi-client
+    - docker push csmajer/multi-nginx
+    - docker push csmajer/multi-server
+    - docker push csmajer/multi-worker
