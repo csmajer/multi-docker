@@ -1,4 +1,4 @@
-sudo:required
+sudo: required
 services:
     - docker
 
@@ -13,7 +13,6 @@ after_success:
     - docker build -t csmajer/multi-nginx ./nginx
     - docker build -t csmajer/multi-server ./server
     - docker build -t csmajer/multi-worker ./worker
-    #Log in to docker
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
     - docker push csmajer/multi-client
     - docker push csmajer/multi-nginx
